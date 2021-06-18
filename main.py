@@ -1,16 +1,29 @@
-# This is a sample Python script.
+# https://discordapp.com/api/oauth2/authorize?client_id=654139568588718090&permissions=116800&scope=bot Link to add puckbot.
+import discord
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+f = open("token.txt", "r")
+token = f.read()
+client = discord.Client()
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+@client.event
+async def on_ready():
+    print(f"{client.user} exists".format(client))
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    elif message.content.startswith('+agree'):
+        await message.channel.send("https://imgur.com/a/wtKXWjv")
+
+    elif message.content.startswith('+disagree'):
+        await message.channel.send("https://imgur.com/a/DJrsG3F")
+
+    elif "+puck.dip" == message.content:
+        await client.close()
+
+
+client.run(token)
+
