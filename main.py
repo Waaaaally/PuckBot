@@ -24,7 +24,7 @@ async def on_message(message):
     elif message.content.startswith(prefix + 'nod'):
         await message.channel.send("https://imgur.com/a/wtKXWjv")
 
-    elif "<:pucknod:801259360395329567>" in str(message.content) and gamernumber == 42: #funny haha 2% puckspam +pucknod
+    elif ("<:pucknod:801259360395329567>" or "pucknod") in str(message.content) and gamernumber == 42: #funny haha 2% puckspam +pucknod
         for i in range(10):
             await message.channel.send("https://imgur.com/a/wtKXWjv")
 
@@ -39,6 +39,9 @@ async def on_message(message):
 
     elif message.content.startswith(prefix + 'angry'):
         await message.channel.send("https://imgur.com/a/3PKgCmC")
+
+    elif message.content.startswith(prefix + 'cock'):
+        await message.channel.send("https://imgur.com/a/t57bTOK")
 
     elif (prefix + "dip") == message.content:
         await client.close()
