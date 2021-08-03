@@ -1,8 +1,6 @@
 # https://discordapp.com/api/oauth2/authorize?client_id=654139568588718090&permissions=116800&scope=bot Link to add puckbot.
 import random
-
 import discord
-import math
 
 f = open("token.txt", "r")
 token = f.read()
