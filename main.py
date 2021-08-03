@@ -15,7 +15,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-
+    
     gamernumber = random.randint(1, 50)
 
     if message.author == client.user:
@@ -42,6 +42,9 @@ async def on_message(message):
 
     elif message.content.startswith(prefix + 'cock'):
         await message.channel.send("https://imgur.com/a/t57bTOK")
+
+    elif message.content.startswith(prefix + 'based'):
+        await message.channel.send("https://imgur.com/a/B7v3Vff")
 
     elif (prefix + "dip") == message.content:
         await client.close()
