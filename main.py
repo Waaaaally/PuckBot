@@ -29,6 +29,9 @@ async def on_message(message):
     elif message.content.startswith(prefix + 'disagree'):
         await message.channel.send("https://imgur.com/a/DJrsG3F")
 
+    elif message.content.startswith(prefix + 'cringe'):
+        await message.channel.send("https://imgur.com/a/m6WA6zo")
+
     elif message.content.startswith(prefix + 'clown'):
         if gamernumber%2 == 0:
             await message.channel.send("https://imgur.com/a/aI8GMPn")
