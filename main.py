@@ -47,6 +47,12 @@ async def on_message(message):
     elif message.content.startswith(prefix + 'based'):
         await message.channel.send("https://imgur.com/a/B7v3Vff")
 
+    elif message.content.startswith(prefix + 'bruh'):
+        await message.channel.send("https://imgur.com/a/FPG3JAT")
+
+    elif message.content.startswith(prefix + 'happy'):
+        await message.channel.send("https://imgur.com/a/HE30d03")
+
     elif (prefix + "dip") == message.content:
         await client.close()
 
