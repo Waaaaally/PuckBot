@@ -16,44 +16,46 @@ async def on_message(message):
     
     gamernumber = random.randint(1, 50)
 
+    message_content = message.content.lower()
+
     if message.author == client.user:
         return
 
-    elif message.content.startswith(prefix + 'nod'):
+    elif message_content.startswith(prefix + 'nod'):
         await message.channel.send("https://imgur.com/a/wtKXWjv")
 
-    elif ("<:pucknod:801259360395329567>" or "pucknod") in str(message.content) and gamernumber == 42: #funny haha 2% puckspam +pucknod
+    elif ("<:pucknod:801259360395329567>" or "pucknod" or "Pucknod") in str(message_content) and gamernumber == 42: #funny haha 2% puckspam +pucknod
         for i in range(10):
             await message.channel.send("https://imgur.com/a/wtKXWjv")
 
-    elif message.content.startswith(prefix + 'disagree'):
+    elif message_content.startswith(prefix + 'disagree'):
         await message.channel.send("https://imgur.com/a/DJrsG3F")
 
-    elif message.content.startswith(prefix + 'cringe'):
+    elif message_content.startswith(prefix + 'cringe'):
         await message.channel.send("https://imgur.com/a/m6WA6zo")
 
-    elif message.content.startswith(prefix + 'clown'):
+    elif message_content.startswith(prefix + 'clown'):
         if gamernumber%2 == 0:
             await message.channel.send("https://imgur.com/a/aI8GMPn")
         else:
             await message.channel.send("https://imgur.com/a/MEDtGgs")
 
-    elif message.content.startswith(prefix + 'angry'):
+    elif message_content.startswith(prefix + 'angry'):
         await message.channel.send("https://imgur.com/a/3PKgCmC")
 
-    elif message.content.startswith(prefix + 'cock'):
+    elif message_content.startswith(prefix + 'cock'):
         await message.channel.send("https://imgur.com/a/t57bTOK")
 
-    elif message.content.startswith(prefix + 'based'):
+    elif message_content.startswith(prefix + 'based'):
         await message.channel.send("https://imgur.com/a/B7v3Vff")
 
-    elif message.content.startswith(prefix + 'bruh'):
+    elif message_content.startswith(prefix + 'bruh'):
         await message.channel.send("https://imgur.com/a/FPG3JAT")
 
-    elif message.content.startswith(prefix + 'happy'):
+    elif message_content.startswith(prefix + 'happy'):
         await message.channel.send("https://imgur.com/a/HE30d03")
 
-    elif (prefix + "dip") == message.content:
+    elif (prefix + "dip") == message_content:
         await client.close()
 
 client.run(token)
