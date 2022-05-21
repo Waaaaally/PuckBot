@@ -1,12 +1,12 @@
 # https://discordapp.com/api/oauth2/authorize?client_id=654139568588718090&permissions=116800&scope=bot Link to add puckbot.
 import random
 import discord
+from discord.ext import commands
 
 f = open("token.txt", "r")
 token = f.read()
 client = discord.Client()
 prefix = "puck"
-
 @client.event
 async def on_ready():
     print(f"{client.user} exists".format(client))
@@ -55,22 +55,86 @@ async def on_message(message):
     elif message_content.startswith(prefix + 'happy'):
         await message.channel.send("https://imgur.com/a/HE30d03")
 
-    elif message_content.startswith(prefix + 'draft'): #send message for now, then sticker
-        puck_draft()
+    elif message_content.startswith(prefix + 'draft'):
+        await draft(message)
 
     elif (prefix + "dip") == message_content:
         await client.close()
 
-def puck_draft():
-    draft = await message.channel.send('Draft message')
+async def draft(message):
+    amongus = discord.Embed(title = 'Roles', description = 'Draft Roles')
+    amongus.add_field(name = 'Top: ', value = 'None', inline = False)
+    amongus.add_field(name = 'Jungle: ', value = 'None', inline = False)
+    amongus.add_field(name = 'Mid: ', value = 'None', inline = False)
+    amongus.add_field(name = 'Bot: ', value = 'None', inline = False)
+    amongus.add_field(name = 'Sup: ', value = 'None', inline = False)
+    amongus.add_field(name = 'Fill', value = 'None', inline = False)
+
+    draft = await message.channel.send('Draft message', embed = amongus)
     await draft.add_reaction('⬆')
     await draft.add_reaction('🌳')
     await draft.add_reaction('↗')
     await draft.add_reaction('⬇')
     await draft.add_reaction('💡')
-    #hopefully above works and then like yeah
-    #get stuff to happen on rxn based on user.
+    await draft.add_reaction('⬜')
+    #Todo Have a reaction to end the thing
 
+@client.event
+async def on_reaction_add(reaction, user):
+    if('Draft message' in reaction.message.content and user.id != client.user.id):
+        print(client.intents.members)
+        if(reaction.emoji == '⬆'):
+            reaction.message.embeds[0].set_field_at(0, name = 'Top: ', value = user.name, inline = False)
+            await reaction.message.edit(embed = reaction.message.embeds[0])
+        elif(reaction.emoji == '🌳'):
+            reaction.message.embeds[0].set_field_at(1, name = 'Jungle: ', value = user.name, inline = False)
+            await reaction.message.edit(embed = reaction.message.embeds[0])
+        elif(reaction.emoji == '↗'):
+            reaction.message.embeds[0].set_field_at(2, name = 'Mid: ', value = user.name, inline = False)
+            await reaction.message.edit(embed = reaction.message.embeds[0])
+        elif(reaction.emoji == '⬇'):
+            reaction.message.embeds[0].set_field_at(3, name = 'Bot: ', value = user.name, inline = False)
+            await reaction.message.edit(embed = reaction.message.embeds[0])
+        elif(reaction.emoji == '💡'):
+            reaction.message.embeds[0].set_field_at(4, name = 'Sup: ', value = user.name, inline = False)
+            await reaction.message.edit(embed = reaction.message.embeds[0])
+        elif(reaction.emoji == '⬜'):
+            fillQueue = reaction.message.embeds[0].fields[5].value
+            if(fillQueue == 'None'):
+                reaction.message.embeds[0].set_field_at(5, name = 'Fill: ', value = user.name, inline = False)
+            else:
+                reaction.message.embeds[0].set_field_at(5, name = 'Fill: ', value = fillQueue + " " + user.name, inline = False)
+
+            await reaction.message.edit(embed = reaction.message.embeds[0])
+
+#TODO helper for repeat rxns async def on_reaction_remove(reaction, user)
+@client.event
+async def on_reaction_remove(reaction, user):
+    print('sus')
+    if ('Draft message' in reaction.message.content and user.id != client.user.id):
+        if (reaction.emoji == '⬆'):
+            reaction.message.embeds[0].set_field_at(0, name='Top: ', value = 'None', inline=False)
+            await reaction.message.edit(embed=reaction.message.embeds[0])
+        elif (reaction.emoji == '🌳'):
+            reaction.message.embeds[0].set_field_at(1, name='Jungle: ', value = 'None', inline=False)
+            await reaction.message.edit(embed=reaction.message.embeds[0])
+        elif (reaction.emoji == '↗'):
+            reaction.message.embeds[0].set_field_at(2, name='Mid: ', value = 'None', inline=False)
+            await reaction.message.edit(embed=reaction.message.embeds[0])
+        elif (reaction.emoji == '⬇'):
+            reaction.message.embeds[0].set_field_at(3, name='Bot: ', value = 'None', inline=False)
+            await reaction.message.edit(embed=reaction.message.embeds[0])
+        elif (reaction.emoji == '💡'):
+            reaction.message.embeds[0].set_field_at(4, name='Sup: ', value = 'None', inline=False)
+            await reaction.message.edit(embed=reaction.message.embeds[0])
+        elif (reaction.emoji == '⬜'):
+            fillQueue = reaction.message.embeds[0].fields[5].value
+            if (fillQueue == 'None'):
+                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value=user.name, inline=False)
+            else:
+                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value=fillQueue + " " + user.name,
+                                                        inline=False)
+
+            await reaction.message.edit(embed=reaction.message.embeds[0])
 
 client.run(token)
-
