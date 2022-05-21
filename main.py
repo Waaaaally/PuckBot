@@ -5,7 +5,10 @@ from discord.ext import commands
 
 f = open("token.txt", "r")
 token = f.read()
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+intents.presences = True
+client= discord.Client(intents=intents)
 prefix = "puck"
 @client.event
 async def on_ready():
@@ -77,12 +80,11 @@ async def draft(message):
     await draft.add_reaction('⬇')
     await draft.add_reaction('💡')
     await draft.add_reaction('⬜')
-    #Todo Have a reaction to end the thing
+    #Todo Have a reaction to end the thing, Resolve Role fistfighting
 
 @client.event
 async def on_reaction_add(reaction, user):
     if('Draft message' in reaction.message.content and user.id != client.user.id):
-        print(client.intents.members)
         if(reaction.emoji == '⬆'):
             reaction.message.embeds[0].set_field_at(0, name = 'Top: ', value = user.name, inline = False)
             await reaction.message.edit(embed = reaction.message.embeds[0])
@@ -107,10 +109,9 @@ async def on_reaction_add(reaction, user):
 
             await reaction.message.edit(embed = reaction.message.embeds[0])
 
-#TODO helper for repeat rxns async def on_reaction_remove(reaction, user)
+#TODO helper for repeat rxns async
 @client.event
 async def on_reaction_remove(reaction, user):
-    print('sus')
     if ('Draft message' in reaction.message.content and user.id != client.user.id):
         if (reaction.emoji == '⬆'):
             reaction.message.embeds[0].set_field_at(0, name='Top: ', value = 'None', inline=False)
@@ -128,12 +129,14 @@ async def on_reaction_remove(reaction, user):
             reaction.message.embeds[0].set_field_at(4, name='Sup: ', value = 'None', inline=False)
             await reaction.message.edit(embed=reaction.message.embeds[0])
         elif (reaction.emoji == '⬜'):
-            fillQueue = reaction.message.embeds[0].fields[5].value
-            if (fillQueue == 'None'):
-                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value=user.name, inline=False)
+            fillQueue = reaction.message.embeds[0].fields[5].value.split(" ")
+            fillQueue.remove(user.name)
+            newQueue = " ".join(fillQueue)
+
+            if(len(newQueue) == 0):
+                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value = 'None', inline=False)
             else:
-                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value=fillQueue + " " + user.name,
-                                                        inline=False)
+                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value = newQueue, inline=False)
 
             await reaction.message.edit(embed=reaction.message.embeds[0])
 
