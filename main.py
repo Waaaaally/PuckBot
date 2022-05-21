@@ -80,8 +80,8 @@ async def draft(message):
     await draft.add_reaction('⬇')
     await draft.add_reaction('💡')
     await draft.add_reaction('⬜')
-    #Todo Have a reaction to end the thing, Resolve Role fistfighting
-
+    #Todo Have a reaction to end the thing, Resolve Role fistfighting, Tyler1 Issue (Multi Role Gods[not fill]), pucknorms sticker, fence emote supp
+    #Todo send inprogress instead of constant new ones, role queue system when stuff gets dequeued?
 @client.event
 async def on_reaction_add(reaction, user):
     if('Draft message' in reaction.message.content and user.id != client.user.id):
@@ -109,7 +109,6 @@ async def on_reaction_add(reaction, user):
 
             await reaction.message.edit(embed = reaction.message.embeds[0])
 
-#TODO helper for repeat rxns async
 @client.event
 async def on_reaction_remove(reaction, user):
     if ('Draft message' in reaction.message.content and user.id != client.user.id):
