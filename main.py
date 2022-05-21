@@ -55,8 +55,22 @@ async def on_message(message):
     elif message_content.startswith(prefix + 'happy'):
         await message.channel.send("https://imgur.com/a/HE30d03")
 
+    elif message_content.startswith(prefix + 'draft'): #send message for now, then sticker
+        puck_draft()
+
     elif (prefix + "dip") == message_content:
         await client.close()
+
+def puck_draft():
+    draft = await message.channel.send('Draft message')
+    await draft.add_reaction('⬆')
+    await draft.add_reaction('🌳')
+    await draft.add_reaction('↗')
+    await draft.add_reaction('⬇')
+    await draft.add_reaction('💡')
+    #hopefully above works and then like yeah
+    #get stuff to happen on rxn based on user.
+
 
 client.run(token)
 
