@@ -2,6 +2,7 @@
 import random
 import discord
 from discord.ext import commands
+from discord import Emoji
 
 f = open("token.txt", "r")
 token = f.read()
@@ -10,6 +11,13 @@ intents.members = True
 intents.presences = True
 client= discord.Client(intents=intents)
 prefix = "puck"
+
+#topQueue = []
+#jgQueue = []
+#midQueue = []
+#botQueue = []
+#supQueue = []
+
 @client.event
 async def on_ready():
     print(f"{client.user} exists".format(client))
@@ -58,7 +66,7 @@ async def on_message(message):
     elif message_content.startswith(prefix + 'happy'):
         await message.channel.send("https://imgur.com/a/HE30d03")
 
-    elif message_content.startswith(prefix + 'draft'):
+    elif prefix+'draft' in message_content:
         await draft(message)
 
     elif (prefix + "dip") == message_content:
@@ -66,6 +74,7 @@ async def on_message(message):
 
 async def draft(message):
     amongus = discord.Embed(title = 'Roles', description = 'Draft Roles')
+    amongus.set_image(url = 'https://cdn.discordapp.com/attachments/505828208982097921/918226847882412072/unknown.png')
     amongus.add_field(name = 'Top: ', value = 'None', inline = False)
     amongus.add_field(name = 'Jungle: ', value = 'None', inline = False)
     amongus.add_field(name = 'Mid: ', value = 'None', inline = False)
@@ -78,65 +87,75 @@ async def draft(message):
     await draft.add_reaction('🌳')
     await draft.add_reaction('↗')
     await draft.add_reaction('⬇')
-    await draft.add_reaction('💡')
+    await draft.add_reaction('<:fence:862522273022214156>')
     await draft.add_reaction('⬜')
-    #Todo Have a reaction to end the thing, Resolve Role fistfighting, Tyler1 Issue (Multi Role Gods[not fill]), pucknorms sticker, fence emote supp
+    await draft.add_reaction('🚫')
+    #Todo Have a reaction to end the thing, Resolve Role fistfighting, Tyler1 Issue (Multi Role Gods[not fill]),
     #Todo send inprogress instead of constant new ones, role queue system when stuff gets dequeued?
+    #Todo  pucknorms sticker later, Discordpy yet to add sticker sending. I think
 @client.event
 async def on_reaction_add(reaction, user):
-    if('Draft message' in reaction.message.content and user.id != client.user.id):
-        if(reaction.emoji == '⬆'):
-            reaction.message.embeds[0].set_field_at(0, name = 'Top: ', value = user.name, inline = False)
-            await reaction.message.edit(embed = reaction.message.embeds[0])
-        elif(reaction.emoji == '🌳'):
-            reaction.message.embeds[0].set_field_at(1, name = 'Jungle: ', value = user.name, inline = False)
-            await reaction.message.edit(embed = reaction.message.embeds[0])
-        elif(reaction.emoji == '↗'):
-            reaction.message.embeds[0].set_field_at(2, name = 'Mid: ', value = user.name, inline = False)
-            await reaction.message.edit(embed = reaction.message.embeds[0])
-        elif(reaction.emoji == '⬇'):
-            reaction.message.embeds[0].set_field_at(3, name = 'Bot: ', value = user.name, inline = False)
-            await reaction.message.edit(embed = reaction.message.embeds[0])
-        elif(reaction.emoji == '💡'):
-            reaction.message.embeds[0].set_field_at(4, name = 'Sup: ', value = user.name, inline = False)
-            await reaction.message.edit(embed = reaction.message.embeds[0])
-        elif(reaction.emoji == '⬜'):
-            fillQueue = reaction.message.embeds[0].fields[5].value
+    # "queue" is jsut w/ arrays and we only show the fist value everytime and rmeove it when someone dequeues so it then shows the next in line one. how do make array that doesnt reset?
+    # downside, when ppl want to swap around they have to go thorugh the whole queue? non issue? discuss. OTherwise have to do other stuff
+    reactionMessage = reaction.message
+    emoji = reaction.emoji
+    if('Draft message' in reactionMessage.content and user.id != client.user.id):
+        if(emoji == '⬆'):
+            reactionMessage.embeds[0].set_field_at(0, name ='Top: ', value = user.name, inline = False)
+            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+        elif(emoji == '🌳'):
+            reactionMessage.embeds[0].set_field_at(1, name ='Jungle: ', value = user.name, inline = False)
+            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+        elif(emoji == '↗'):
+            reactionMessage.embeds[0].set_field_at(2, name ='Mid: ', value = user.name, inline = False)
+            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+        elif(emoji == '⬇'):
+            reactionMessage.embeds[0].set_field_at(3, name ='Bot: ', value = user.name, inline = False)
+            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+        elif(isinstance(emoji, Emoji) and emoji.name == 'fence'): #todo doesn't work w/ custom emotes?
+            reactionMessage.embeds[0].set_field_at(4, name ='Sup: ', value = user.name, inline = False)
+            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+        elif(emoji == '⬜'):
+            fillQueue = reactionMessage.embeds[0].fields[5].value
             if(fillQueue == 'None'):
-                reaction.message.embeds[0].set_field_at(5, name = 'Fill: ', value = user.name, inline = False)
+                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value = user.name, inline = False)
             else:
-                reaction.message.embeds[0].set_field_at(5, name = 'Fill: ', value = fillQueue + " " + user.name, inline = False)
-
-            await reaction.message.edit(embed = reaction.message.embeds[0])
+                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value =fillQueue + " " + user.name, inline = False)
+            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+        elif(emoji == '🚫'):
+            blankEmbed = discord.Embed(description = 'No more drafters')
+            await reactionMessage.edit(embed = blankEmbed)
 
 @client.event
 async def on_reaction_remove(reaction, user):
-    if ('Draft message' in reaction.message.content and user.id != client.user.id):
-        if (reaction.emoji == '⬆'):
-            reaction.message.embeds[0].set_field_at(0, name='Top: ', value = 'None', inline=False)
-            await reaction.message.edit(embed=reaction.message.embeds[0])
-        elif (reaction.emoji == '🌳'):
-            reaction.message.embeds[0].set_field_at(1, name='Jungle: ', value = 'None', inline=False)
-            await reaction.message.edit(embed=reaction.message.embeds[0])
-        elif (reaction.emoji == '↗'):
-            reaction.message.embeds[0].set_field_at(2, name='Mid: ', value = 'None', inline=False)
-            await reaction.message.edit(embed=reaction.message.embeds[0])
-        elif (reaction.emoji == '⬇'):
-            reaction.message.embeds[0].set_field_at(3, name='Bot: ', value = 'None', inline=False)
-            await reaction.message.edit(embed=reaction.message.embeds[0])
-        elif (reaction.emoji == '💡'):
-            reaction.message.embeds[0].set_field_at(4, name='Sup: ', value = 'None', inline=False)
-            await reaction.message.edit(embed=reaction.message.embeds[0])
-        elif (reaction.emoji == '⬜'):
-            fillQueue = reaction.message.embeds[0].fields[5].value.split(" ")
+    reactionMessage = reaction.message
+    emoji = reaction.emoji
+    if ('Draft message' in reactionMessage.content and user.id != client.user.id):
+        if (emoji == '⬆'):
+            reactionMessage.embeds[0].set_field_at(0, name='Top: ', value = 'None', inline=False)
+            await reactionMessage.edit(embed=reactionMessage.embeds[0])
+        elif (emoji == '🌳'):
+            reactionMessage.embeds[0].set_field_at(1, name='Jungle: ', value = 'None', inline=False)
+            await reactionMessage.edit(embed=reactionMessage.embeds[0])
+        elif (emoji == '↗'):
+            reactionMessage.embeds[0].set_field_at(2, name='Mid: ', value ='None', inline=False)
+            await reactionMessage.edit(embed=reactionMessage.embeds[0])
+        elif (emoji == '⬇'):
+            reactionMessage.embeds[0].set_field_at(3, name='Bot: ', value ='None', inline=False)
+            await reactionMessage.edit(embed=reactionMessage.embeds[0])
+        elif (isinstance(emoji, Emoji) and emoji.name == 'fence'):  # todo doesn't work w/ custom emotes?
+            reactionMessage.embeds[0].set_field_at(4, name='Sup: ', value ='None', inline=False)
+            await reactionMessage.edit(embed=reactionMessage.embeds[0])
+        elif (emoji == '⬜'):
+            fillQueue = reactionMessage.embeds[0].fields[5].value.split(" ")
             fillQueue.remove(user.name)
             newQueue = " ".join(fillQueue)
 
             if(len(newQueue) == 0):
-                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value = 'None', inline=False)
+                reactionMessage.embeds[0].set_field_at(5, name='Fill: ', value ='None', inline=False)
             else:
-                reaction.message.embeds[0].set_field_at(5, name='Fill: ', value = newQueue, inline=False)
+                reactionMessage.embeds[0].set_field_at(5, name='Fill: ', value = newQueue, inline=False)
 
-            await reaction.message.edit(embed=reaction.message.embeds[0])
+            await reactionMessage.edit(embed=reactionMessage.embeds[0])
 
 client.run(token)
