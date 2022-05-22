@@ -72,12 +72,12 @@ async def on_message(message):
 async def draft(message):
     amongus = discord.Embed(title = 'Roles', description = 'Draft Roles')
     amongus.set_image(url = 'https://cdn.discordapp.com/attachments/505828208982097921/918226847882412072/unknown.png')
-    amongus.add_field(name = 'Top: ', value = 'None', inline = False)
-    amongus.add_field(name = 'Jungle: ', value = 'None', inline = False)
-    amongus.add_field(name = 'Mid: ', value = 'None', inline = False)
-    amongus.add_field(name = 'Bot: ', value = 'None', inline = False)
-    amongus.add_field(name = 'Sup: ', value = 'None', inline = False)
-    amongus.add_field(name = 'Fill', value = 'None', inline = False)
+    amongus.add_field(name = 'Top: ⬆', value = 'None', inline = False)
+    amongus.add_field(name = 'Jungle: 🌳', value = 'None', inline = False)
+    amongus.add_field(name = 'Mid: ↗', value = 'None', inline = False)
+    amongus.add_field(name = 'Bot: ⬇', value = 'None', inline = False)
+    amongus.add_field(name = 'Sup: <:fence:862522273022214156>', value = 'None', inline = False)
+    amongus.add_field(name = 'Fill: ⬜', value = 'None', inline = False)
 
     draft = await message.channel.send('Draft message', embed = amongus)
     await draft.add_reaction('⬆')
@@ -100,7 +100,7 @@ async def on_reaction_add(reaction, user):
             if (username in roleBlacklist or reactionMessage.embeds[0].fields[0].value != 'None'):
                 await reaction.remove(user)
             else:
-                reactionMessage.embeds[0].set_field_at(0, name ='Top: ', value = username, inline = False)
+                reactionMessage.embeds[0].set_field_at(0, name ='Top: ⬆', value = username, inline = False)
                 roleBlacklist.append(username)
                 await reactionMessage.edit(embed = reactionMessage.embeds[0])
 
@@ -109,7 +109,7 @@ async def on_reaction_add(reaction, user):
             if(username in roleBlacklist or reactionMessage.embeds[0].fields[1].value != 'None'):
                 await reaction.remove(user)
             else:
-                reactionMessage.embeds[0].set_field_at(1, name ='Jungle: ', value = username, inline = False)
+                reactionMessage.embeds[0].set_field_at(1, name ='Jungle: 🌳', value = username, inline = False)
                 roleBlacklist.append(username)
                 await reactionMessage.edit(embed = reactionMessage.embeds[0])
 
@@ -117,7 +117,7 @@ async def on_reaction_add(reaction, user):
             if (username in roleBlacklist or reactionMessage.embeds[0].fields[2].value != 'None'):
                 await reaction.remove(user)
             else:
-                reactionMessage.embeds[0].set_field_at(2, name ='Mid: ', value = username, inline = False)
+                reactionMessage.embeds[0].set_field_at(2, name ='Mid: ↗', value = username, inline = False)
                 roleBlacklist.append(username)
                 await reactionMessage.edit(embed = reactionMessage.embeds[0])
 
@@ -125,7 +125,7 @@ async def on_reaction_add(reaction, user):
             if (username in roleBlacklist or reactionMessage.embeds[0].fields[3].value != 'None'):
                 await reaction.remove(user)
             else:
-                reactionMessage.embeds[0].set_field_at(3, name ='Bot: ', value = username, inline = False)
+                reactionMessage.embeds[0].set_field_at(3, name ='Bot: ⬇', value = username, inline = False)
                 roleBlacklist.append(username)
                 await reactionMessage.edit(embed = reactionMessage.embeds[0])
 
@@ -133,16 +133,16 @@ async def on_reaction_add(reaction, user):
             if (username in roleBlacklist or reactionMessage.embeds[0].fields[4].value != 'None'):
                 await reaction.remove(user)
             else:
-                reactionMessage.embeds[0].set_field_at(4, name ='Sup: ', value = username, inline = False)
+                reactionMessage.embeds[0].set_field_at(4, name ='Sup: <:fence:862522273022214156>', value = username, inline = False)
                 roleBlacklist.append(username)
                 await reactionMessage.edit(embed = reactionMessage.embeds[0])
 
         elif(emoji == '⬜'):
             fillQueue = reactionMessage.embeds[0].fields[5].value
             if(fillQueue == 'None'):
-                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value = username, inline = False)
+                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ⬜', value = username, inline = False)
             else:
-                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value = fillQueue + " " + username, inline = False)
+                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ⬜', value = fillQueue + " " + username, inline = False)
             await reactionMessage.edit(embed = reactionMessage.embeds[0])
 
         elif(emoji == '🚫'):
@@ -157,27 +157,27 @@ async def on_reaction_remove(reaction, user):
     username = user.name
     if ('Draft message' in reactionMessage.content and user.id != client.user.id):
         if (emoji == '⬆' and reactionMessage.embeds[0].fields[0].value == username):
-            reactionMessage.embeds[0].set_field_at(0, name='Top: ', value = 'None', inline=False)
+            reactionMessage.embeds[0].set_field_at(0, name='Top: ⬆', value = 'None', inline=False)
             roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
 
         elif (emoji == '🌳' and reactionMessage.embeds[0].fields[1].value == username):
-            reactionMessage.embeds[0].set_field_at(1, name='Jungle: ', value = 'None', inline=False)
+            reactionMessage.embeds[0].set_field_at(1, name='Jungle: 🌳', value = 'None', inline=False)
             roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
 
         elif (emoji == '↗' and reactionMessage.embeds[0].fields[2].value == username):
-            reactionMessage.embeds[0].set_field_at(2, name='Mid: ', value = 'None', inline=False)
+            reactionMessage.embeds[0].set_field_at(2, name='Mid: ↗', value = 'None', inline=False)
             roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
 
         elif (emoji == '⬇' and reactionMessage.embeds[0].fields[3].value == username):
-            reactionMessage.embeds[0].set_field_at(3, name='Bot: ', value = 'None', inline=False)
+            reactionMessage.embeds[0].set_field_at(3, name='Bot: ⬇', value = 'None', inline=False)
             roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
 
         elif (isinstance(emoji, Emoji) and emoji.name == 'fence' and reactionMessage.embeds[0].fields[4].value == username):
-            reactionMessage.embeds[0].set_field_at(4, name='Sup: ', value = 'None', inline=False)
+            reactionMessage.embeds[0].set_field_at(4, name='Sup: <:fence:862522273022214156>', value = 'None', inline=False)
             roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
 
@@ -187,9 +187,9 @@ async def on_reaction_remove(reaction, user):
             newQueue = " ".join(fillQueue)
 
             if(len(newQueue) == 0):
-                reactionMessage.embeds[0].set_field_at(5, name='Fill: ', value = 'None', inline=False)
+                reactionMessage.embeds[0].set_field_at(5, name='Fill: ⬜', value = 'None', inline=False)
             else:
-                reactionMessage.embeds[0].set_field_at(5, name='Fill: ', value = newQueue, inline=False)
+                reactionMessage.embeds[0].set_field_at(5, name='Fill: ⬜', value = newQueue, inline=False)
 
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
 
