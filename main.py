@@ -14,7 +14,6 @@ prefix = "puck"
 
 roleBlacklist = []
 
-
 @client.event
 async def on_ready():
     print(f"{client.user} exists".format(client))
@@ -89,12 +88,14 @@ async def draft(message):
     await draft.add_reaction('🚫')
 
     #Todo send inprogress instead of constant new ones
+    #Todo make it so yhou can't send another draft while one is in progress
 
 @client.event
 async def on_reaction_add(reaction, user):
     reactionMessage = reaction.message
     emoji = reaction.emoji
     username = user.name
+
     if('Draft message' in reactionMessage.content and user.id != client.user.id):
         if(emoji == '⬆'):
             if (username in roleBlacklist or reactionMessage.embeds[0].fields[0].value != 'None'):
@@ -147,6 +148,7 @@ async def on_reaction_add(reaction, user):
 
         elif(emoji == '🚫'):
             blankEmbed = discord.Embed(description = 'No more drafters')
+            roleBlacklist.clear()
             await reactionMessage.edit(embed = blankEmbed)
             await reactionMessage.clear_reactions()
 
