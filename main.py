@@ -12,11 +12,8 @@ intents.presences = True
 client= discord.Client(intents=intents)
 prefix = "puck"
 
-#topQueue = []
-#jgQueue = []
-#midQueue = []
-#botQueue = []
-#supQueue = []
+roleBlacklist = []
+
 
 @client.event
 async def on_ready():
@@ -90,69 +87,107 @@ async def draft(message):
     await draft.add_reaction('<:fence:862522273022214156>')
     await draft.add_reaction('⬜')
     await draft.add_reaction('🚫')
-    #Todo Have a reaction to end the thing, Resolve Role fistfighting, Tyler1 Issue (Multi Role Gods[not fill]),
-    #Todo send inprogress instead of constant new ones, role queue system when stuff gets dequeued?
-    #Todo  pucknorms sticker later, Discordpy yet to add sticker sending. I think
+
+    #Todo send inprogress instead of constant new ones
+
 @client.event
 async def on_reaction_add(reaction, user):
-    # "queue" is jsut w/ arrays and we only show the fist value everytime and rmeove it when someone dequeues so it then shows the next in line one. how do make array that doesnt reset?
-    # downside, when ppl want to swap around they have to go thorugh the whole queue? non issue? discuss. OTherwise have to do other stuff
     reactionMessage = reaction.message
     emoji = reaction.emoji
+    username = user.name
     if('Draft message' in reactionMessage.content and user.id != client.user.id):
         if(emoji == '⬆'):
-            reactionMessage.embeds[0].set_field_at(0, name ='Top: ', value = user.name, inline = False)
-            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+            if (username in roleBlacklist or reactionMessage.embeds[0].fields[0].value != 'None'):
+                await reaction.remove(user)
+            else:
+                reactionMessage.embeds[0].set_field_at(0, name ='Top: ', value = username, inline = False)
+                roleBlacklist.append(username)
+                await reactionMessage.edit(embed = reactionMessage.embeds[0])
+
+
         elif(emoji == '🌳'):
-            reactionMessage.embeds[0].set_field_at(1, name ='Jungle: ', value = user.name, inline = False)
-            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+            if(username in roleBlacklist or reactionMessage.embeds[0].fields[1].value != 'None'):
+                await reaction.remove(user)
+            else:
+                reactionMessage.embeds[0].set_field_at(1, name ='Jungle: ', value = username, inline = False)
+                roleBlacklist.append(username)
+                await reactionMessage.edit(embed = reactionMessage.embeds[0])
+
         elif(emoji == '↗'):
-            reactionMessage.embeds[0].set_field_at(2, name ='Mid: ', value = user.name, inline = False)
-            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+            if (username in roleBlacklist or reactionMessage.embeds[0].fields[2].value != 'None'):
+                await reaction.remove(user)
+            else:
+                reactionMessage.embeds[0].set_field_at(2, name ='Mid: ', value = username, inline = False)
+                roleBlacklist.append(username)
+                await reactionMessage.edit(embed = reactionMessage.embeds[0])
+
         elif(emoji == '⬇'):
-            reactionMessage.embeds[0].set_field_at(3, name ='Bot: ', value = user.name, inline = False)
-            await reactionMessage.edit(embed = reactionMessage.embeds[0])
-        elif(isinstance(emoji, Emoji) and emoji.name == 'fence'): #todo doesn't work w/ custom emotes?
-            reactionMessage.embeds[0].set_field_at(4, name ='Sup: ', value = user.name, inline = False)
-            await reactionMessage.edit(embed = reactionMessage.embeds[0])
+            if (username in roleBlacklist or reactionMessage.embeds[0].fields[3].value != 'None'):
+                await reaction.remove(user)
+            else:
+                reactionMessage.embeds[0].set_field_at(3, name ='Bot: ', value = username, inline = False)
+                roleBlacklist.append(username)
+                await reactionMessage.edit(embed = reactionMessage.embeds[0])
+
+        elif(isinstance(emoji, Emoji) and emoji.name == 'fence'):
+            if (username in roleBlacklist or reactionMessage.embeds[0].fields[4].value != 'None'):
+                await reaction.remove(user)
+            else:
+                reactionMessage.embeds[0].set_field_at(4, name ='Sup: ', value = username, inline = False)
+                roleBlacklist.append(username)
+                await reactionMessage.edit(embed = reactionMessage.embeds[0])
+
         elif(emoji == '⬜'):
             fillQueue = reactionMessage.embeds[0].fields[5].value
             if(fillQueue == 'None'):
-                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value = user.name, inline = False)
+                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value = username, inline = False)
             else:
-                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value =fillQueue + " " + user.name, inline = False)
+                reactionMessage.embeds[0].set_field_at(5, name ='Fill: ', value = fillQueue + " " + username, inline = False)
             await reactionMessage.edit(embed = reactionMessage.embeds[0])
+
         elif(emoji == '🚫'):
             blankEmbed = discord.Embed(description = 'No more drafters')
             await reactionMessage.edit(embed = blankEmbed)
+            await reactionMessage.clear_reactions()
 
 @client.event
 async def on_reaction_remove(reaction, user):
     reactionMessage = reaction.message
     emoji = reaction.emoji
+    username = user.name
     if ('Draft message' in reactionMessage.content and user.id != client.user.id):
-        if (emoji == '⬆'):
+        if (emoji == '⬆' and reactionMessage.embeds[0].fields[0].value == username):
             reactionMessage.embeds[0].set_field_at(0, name='Top: ', value = 'None', inline=False)
+            roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
-        elif (emoji == '🌳'):
+
+        elif (emoji == '🌳' and reactionMessage.embeds[0].fields[1].value == username):
             reactionMessage.embeds[0].set_field_at(1, name='Jungle: ', value = 'None', inline=False)
+            roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
-        elif (emoji == '↗'):
-            reactionMessage.embeds[0].set_field_at(2, name='Mid: ', value ='None', inline=False)
+
+        elif (emoji == '↗' and reactionMessage.embeds[0].fields[2].value == username):
+            reactionMessage.embeds[0].set_field_at(2, name='Mid: ', value = 'None', inline=False)
+            roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
-        elif (emoji == '⬇'):
-            reactionMessage.embeds[0].set_field_at(3, name='Bot: ', value ='None', inline=False)
+
+        elif (emoji == '⬇' and reactionMessage.embeds[0].fields[3].value == username):
+            reactionMessage.embeds[0].set_field_at(3, name='Bot: ', value = 'None', inline=False)
+            roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
-        elif (isinstance(emoji, Emoji) and emoji.name == 'fence'):  # todo doesn't work w/ custom emotes?
-            reactionMessage.embeds[0].set_field_at(4, name='Sup: ', value ='None', inline=False)
+
+        elif (isinstance(emoji, Emoji) and emoji.name == 'fence' and reactionMessage.embeds[0].fields[4].value == username):
+            reactionMessage.embeds[0].set_field_at(4, name='Sup: ', value = 'None', inline=False)
+            roleBlacklist.remove(username)
             await reactionMessage.edit(embed=reactionMessage.embeds[0])
+
         elif (emoji == '⬜'):
             fillQueue = reactionMessage.embeds[0].fields[5].value.split(" ")
-            fillQueue.remove(user.name)
+            fillQueue.remove(username)
             newQueue = " ".join(fillQueue)
 
             if(len(newQueue) == 0):
-                reactionMessage.embeds[0].set_field_at(5, name='Fill: ', value ='None', inline=False)
+                reactionMessage.embeds[0].set_field_at(5, name='Fill: ', value = 'None', inline=False)
             else:
                 reactionMessage.embeds[0].set_field_at(5, name='Fill: ', value = newQueue, inline=False)
 
